@@ -1,26 +1,33 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8">
+    <!-- KaTeX の CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+    <!-- KaTeX の JS -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+    <!-- KaTeX Auto-render -->
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+    <!-- marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/lib/marked.umd.js" integrity="sha384-upSO/KilZ3BQjacZuvd6S0LD7zYpQ9H7yGYsxI038+L2Iq+8Ss4vp5ino+9TGSaA" crossorigin="anonymous"></script>
-    <script defer>
+    
+    <script>
       document.addEventListener("DOMContentLoaded", function() {
-        // 1. document.body から生のテキスト（Markdown+数式）を取得
-        const rawText = document.body.textContent || document.body.innerText;
+        // 1. 専用の要素からテキストを取得
+        const container = document.getElementById("content");
+        const rawText = container.textContent;
 
         // 2. marked.js で Markdown を HTML に変換
         const htmlContent = marked.parse(rawText);
 
-        // 3. 変換した HTML を body に再代入
-        document.body.innerHTML = htmlContent;
+        // 3. 変換した HTML を流し込む
+        container.innerHTML = htmlContent;
 
-        // 4. KaTeX の Auto-render で数式部分をレンダリング
-        renderMathInElement(document.body, {
+        // 4. KaTeX の Auto-render で数式をレンダリング
+        renderMathInElement(container, {
             delimiters: [
-                {left: '$$', right: '$$', display: true},  // ディスプレイ数式
-                {left: '$', right: '$', display: false},    // インライン数式
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
             ],
             throwOnError: false
         });
@@ -28,6 +35,8 @@
     </script>
   </head>
   <body>
-    $$1 4 9 16 25 36 49 64 81 100 121 144 (?)$$
+    <div id="content">
+$1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, (?)$
+    </div>
   </body>
 </html>
