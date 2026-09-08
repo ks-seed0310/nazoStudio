@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- KaTeX の CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+    <!-- KaTeX の JS -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+    <!-- KaTeX Auto-render -->
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const container = document.body;
+        const rawText = container.textContent;
+        container.innerHTML = htmlContent;
+        renderMathInElement(container, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+            ],
+            throwOnError: false
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <p>$15 8 3 0 -1 0 3 8 15 24 35$</p>
+    <p>$x=-4:15\newline x=-3:8\newline x=-2:3\newline x=-1:0\newline x=0:-1\newline x=1:0\newline x=2:3\newline x=3:8\newline x=4:15\newline x=5:24\newline x=6:35\newline$</p>
+    <p>$\newline x=0.1:-0.99\newline x=0.2:-0.96\newline x=0.3:-0.91\newline x=0.4:-0.84\newline x=0.5:-0.75\newline$</p>
+  </body>
+</html>
