@@ -1,0 +1,17 @@
+<!-- LATEST -->
+<!doctype html>
+<html lang=ja>
+  <head></head>
+  <body>
+    <input type="date" id="idate">
+    <input id="ipsk">
+    <script>
+      const idate=document.getElementById("idate")
+      const ipsk=document.getElementById("ipsk")
+      const today=new Date()
+      const today_y4=today.getFullYear()
+      const today_m2=String(today.getMonth()+1).padStart(2,"0")
+      const today_d2=String(today.getDate()).padStart(2,"0")
+    </script>
+  </body>
+</html>
