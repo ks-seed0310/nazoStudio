@@ -1,17 +1,198 @@
-<!-- LATEST -->
 <!doctype html>
 <html lang=ja>
-  <head></head>
-  <body>
-    <input type="date" id="idate">
-    <input id="ipsk">
-    <script>
-      const idate=document.getElementById("idate")
-      const ipsk=document.getElementById("ipsk")
-      const today=new Date()
-      const today_y4=today.getFullYear()
-      const today_m2=String(today.getMonth()+1).padStart(2,"0")
-      const today_d2=String(today.getDate()).padStart(2,"0")
-    </script>
-  </body>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset=utf-8>
+        <title>トップページ - 謎解き/その他 メインポータル</title>
+        <style>
+            html{
+                min-width:100vw;
+                min-height:100vh;
+                width:100vw;
+                height:100vh;
+            }
+            body{
+                width:100%;
+                font-family:'Noto Sans JP';
+                font-size:1.2rem;
+            }
+            input{
+                font-size:1.2rem;
+                margin:8px;
+                font-family:'Noto Sans JP';
+                width:max-content;
+            }
+            button{
+                font-size:1.2rem;
+                font-family:'Noto Sans JP'
+            }
+            #dlogs{
+                font-size:1rem;
+            }
+            #dguide1{
+                font-size:1rem;
+            }
+            #dsupport1{
+                font-size:1rem;
+                min-width:100%;
+                width:100%;
+            }
+        </style>
+    </head>
+    <body>
+        <p id="dsupport1">
+            文字の大きさ
+            <a href="?_fs=0.4">小</a>
+            <a href="?_fs=0.6">小さめ</a>
+            <a href="?_fs=0.8">少し小さめ</a>
+            <a href="?_fs=1.0">標準</a>
+            <a href="?_fs=1.2">少し大きめ</a>
+            <a href="?_fs=1.4">大きめ</a>
+            <a href="?_fs=1.8">大</a>
+            <a href="?_fs=2.0">2倍</a>
+            <a href="?_fs=2.5">2.5倍</a>
+            <a href="?_fs=3.0">3倍</a>
+            <a href="?_fs=3.5">3.5倍</a>
+            <a href="?_fs=4.0">4倍</a>
+        </p>
+        <p id="dguide1">日付とキーIDを入力してください。問題ページへ移動します。</p>
+        <div id="ddateBlock">
+            <span id="ddate_guide">日付を選択: </span>
+            <input type="date" id="iDate">
+        </div>
+        <div id="dpskBlock">
+            <span id="dpsk_guide">キーIDを入力: </span>
+            <input id="iPsk" placeholder="(keyID)">
+        </div>
+        <button id="ienter">続行</button>
+        <div id="dlogs">
+            <div id="dnowfetch" style="display:none">
+                <p style="color:green">データの取得中...</p>
+            </div>
+            <div id="dnotfound" style="display:none">
+                <p style="color:red">入力された日付もしくはキーIDが正しくありません。</p>
+            </div>
+            <div id="dnotpublish" style="display:none">
+                <p style="color:red">公開されていません。</p>
+            </div>
+            <div id="dfraudDate" style="display:none">
+                <p style="color:red">日付が入力されていません。</p>
+            </div>
+            <div id="doffline" style="display:none">
+                <p style="color:red">ネットワークに繋がっていません。ネットワーク状況を確認して再試行してください。</p>
+            </div>
+        </div>
+        <script _type=module>
+            function gi(n){
+                return document.getElementById(n)
+            }
+            const el={
+                idate:gi("iDate"),
+                ipsk:gi("iPsk"),
+                dguide1:gi("dguide1"),
+                ienter:gi("ienter"),
+                dlogs:gi("dlogs"),
+                ddateblock:gi("ddateBlock"),
+                dpskblock:gi("dpskBlock"),
+                ddateguide:gi("ddate_guide"),
+                dpskguide:gi("dpsk_guide"),
+                dsupport:gi("dsupport"),
+            }
+            const err_el={
+                doffline:gi("doffline"),
+                dfraud_date:gi("dfraudDate"),
+                dlogs:gi("dlogs"),
+                dnotfound:gi("dnotfound"),
+                dnotpublish:gi("dnotpublish"),
+                dnowfetch:gi("dnowfetch"),
+            }
+            const main_base="https://ks-seed0310.github.io/nazoStudio/"
+            const ping_base=main_base+"ping/repos/std_nazo/"
+            const open_base=main_base+"std_nazo/"
+            const nowTime=new Date()
+            const timeY4=nowTime.getFullYear()
+            const timeM2=String(nowTime.getMonth()+1).padStart(2,"0")
+            const timeD2=String(nowTime.getDate()).padStart(2,"0")
+            el.idate.value=`${timeY4}-${timeM2}-${timeD2}`
+
+            function dialogByKeysOn(e){
+                const elm=err_el[e]
+                elm.style.display="block"
+            }
+            function dialogByKeysOff(e){
+                const elm=err_el[e]
+                elm.style.display="none"
+            }
+            function ch(on){
+                if (on){
+                    dialogByKeysOff("dfraud_date")
+                    dialogByKeysOff("dnotfound")
+                    dialogByKeysOff("dnotpublish")
+                    el.idate.disabled=true
+                    el.ipsk.disabled=true
+                    el.ienter.disabled=true
+                    document.documentElement.style.cursor="wait"
+                    el.ienter.style.cursor="not-allowed"
+                    dialogByKeysOn("dnowfetch")
+                }else{
+                    dialogByKeysOff("dnowfetch")
+                    el.idate.disabled=false
+                    el.ipsk.disabled=false
+                    el.ienter.disabled=false
+                    document.documentElement.style.cursor="auto"
+                    el.ienter.style.cursor="auto"
+                }
+            }
+            async function inpEnd(){
+                ch(true)
+                await new Promise(resolve=>setTimeout(resolve,1000))
+                const i_dav=el.idate.value
+                if (!i_dav){
+                    ch(false)
+                    dialogByKeysOn("dfraud_date")
+                    return
+                }
+                const t_i_dav=el.idate.value.replace(/-/g,"").slice(2)
+                const joined=encodeURIComponent(t_i_dav+"_"+el.ipsk.value)
+                const pingURL=ping_base+joined+".json"
+                try{
+                    const _f=await fetch(pingURL)
+                    const f=await _f.json()
+                    if (f.ok){
+                        window.open(open_base+joined+".html")
+                    }else{
+                        dialogByKeysOn("dnotpublish")
+                    }
+                }catch{
+                    dialogByKeysOn("dnotfound")
+                }
+                dialogByKeysOff("dnowfetch")
+                await new Promise(resolve=>setTimeout(resolve,1000))
+                ch(false)
+            }
+            el.ienter.addEventListener("click",inpEnd)
+            el.ipsk.addEventListener("keyup",e=>{
+                if (e.key==="Enter"){
+                    inpEnd()
+                }    
+            })
+            
+            setInterval(()=>{
+                if (!navigator.onLine){
+                    err_el.doffline.style.display="block"
+                }else{
+                    err_el.doffline.style.display="none"
+                }
+            },1000)
+
+            !function(){
+                const p=new URLSearchParams(location.search)
+                const _FontSize=Number(p.get("_fs")??1.0)
+                document.body.style.fontSize=1.2*_FontSize+"rem"
+                document.querySelectorAll("input,button").forEach((e)=>{
+                    e.style.fontSize=1.2*_FontSize+"rem"
+                })
+            }()
+        </script>
+    </body>
 </html>
